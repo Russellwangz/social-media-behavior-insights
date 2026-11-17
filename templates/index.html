@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Social Media Usage Assessment</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0f172a;--card:#1e293b;--card2:#334155;
+  --accent:#6366f1;--accent2:#818cf8;--accent3:#4f46e5;
+  --green:#22c55e;--yellow:#eab308;--red:#ef4444;--orange:#f97316;
+  --text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;
+  --radius:12px;
+}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center}
+.container{max-width:720px;width:100%;padding:24px 20px;margin:0 auto}
+h1{font-size:1.8rem;text-align:center;margin:32px 0 8px;background:linear-gradient(135deg,var(--accent2),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.subtitle{text-align:center;color:var(--text2);margin-bottom:32px;font-size:.95rem}
+
+/* Progress */
+.progress-bar{display:flex;gap:4px;margin-bottom:28px}
+.progress-bar .seg{flex:1;height:5px;border-radius:3px;background:var(--card2);transition:.3s}
+.progress-bar .seg.done{background:var(--accent2)}
+.progress-bar .seg.active{background:var(--accent);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* Steps */
+.step{display:none;animation:fadeIn .35s ease}
+.step.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.step-title{font-size:1.15rem;font-weight:600;margin-bottom:6px}
+.step-desc{color:var(--text2);font-size:.88rem;margin-bottom:18px}
+
+/* Option cards */
+.options{display:grid;gap:10px}
+.options.cols-2{grid-template-columns:1fr 1fr}
+.options.cols-3{grid-template-columns:1fr 1fr 1fr}
+.options.cols-4{grid-template-columns:1fr 1fr 1fr 1fr}
+.opt-card{background:var(--card);border:2px solid transparent;border-radius:var(--radius);padding:14px 16px;cursor:pointer;transition:.2s;text-align:center;font-size:.92rem;user-select:none}
+.opt-card:hover{border-color:var(--accent2);background:var(--card2)}
+.opt-card.selected{border-color:var(--accent);background:rgba(99,102,241,.15);color:var(--accent2);font-weight:600}
+
+/* Slider */
+.slider-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:8px}
+.slider-wrap input[type=range]{width:100%;accent-color:var(--accent);height:8px;cursor:pointer}
+.slider-val{font-size:2rem;font-weight:700;color:var(--accent2)}
+
+/* Time picker */
+.time-picker{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px}
+.time-picker select{background:var(--card);color:var(--text);border:2px solid var(--card2);border-radius:8px;padding:12px 16px;font-size:1.1rem;cursor:pointer;appearance:none;text-align:center;min-width:80px}
+.time-picker select:focus{border-color:var(--accent);outline:none}
+.time-picker .colon{font-size:1.4rem;font-weight:700;color:var(--text2)}
+
+/* Interaction grid */
+.interact-grid{display:grid;gap:10px;margin-top:8px}
+.interact-row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;background:var(--card);border:1px solid var(--card2);border-radius:10px;padding:10px 12px}
+.interact-row .qtext{font-size:.85rem;color:var(--text2);font-weight:500}
+.interact-row .freq-opts{display:flex;gap:4px}
+.interact-row .freq-btn{min-width:88px;background:var(--card2);border:1px solid var(--card2);border-radius:6px;padding:6px 10px;font-size:.72rem;color:var(--text2);cursor:pointer;transition:.2s;text-align:center}
+.interact-row .freq-btn:hover{border-color:var(--accent2)}
+.interact-row .freq-btn.selected{background:rgba(99,102,241,.15);border-color:var(--accent);color:var(--accent2);font-weight:600}
+
+/* Buttons */
+.btn-row{display:flex;gap:12px;margin-top:24px;justify-content:flex-end}
+.btn{padding:12px 28px;border-radius:var(--radius);border:none;font-size:.95rem;font-weight:600;cursor:pointer;transition:.2s}
+.btn-next{background:var(--accent);color:#fff}
+.btn-next:hover{background:var(--accent3)}
+.btn-next:disabled{opacity:.4;cursor:not-allowed}
+.btn-back{background:var(--card2);color:var(--text2)}
+.btn-back:hover{background:var(--card)}
+.btn-submit{background:var(--green);color:#fff;padding:14px 36px;font-size:1rem}
+.btn-submit:hover{filter:brightness(1.1)}
+.btn-restart{background:var(--card2);color:var(--text);margin-top:20px;display:inline-block}
+
+/* Loading */
+.loading{display:none;text-align:center;padding:60px 20px}
+.loading.active{display:block}
+.spinner{width:48px;height:48px;border:4px solid var(--card2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 20px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Results */
+#results{display:none}
+#results.active{display:block;animation:fadeIn .5s ease}
+.result-card{background:var(--card);border-radius:var(--radius);padding:24px;margin-bottom:16px}
+.result-card h3{font-size:1.05rem;margin-bottom:12px;color:var(--accent2)}
+.persona-badge{display:inline-block;background:linear-gradient(135deg,var(--accent),var(--accent3));color:#fff;padding:8px 20px;border-radius:20px;font-size:1.1rem;font-weight:700;margin:8px 0 16px}
+.severity-badge{display:inline-block;padding:4px 14px;border-radius:12px;font-size:.85rem;font-weight:600;margin-left:8px}
+.severity-low{background:rgba(34,197,94,.15);color:var(--green)}
+.severity-medium{background:rgba(234,179,8,.15);color:var(--yellow)}
+.severity-high{background:rgba(239,68,68,.15);color:var(--red)}
+
+.level-bar{height:14px;border-radius:7px;background:var(--card2);overflow:hidden;margin:12px 0 8px;position:relative}
+.level-fill{height:100%;border-radius:7px;transition:width .8s ease}
+.level-label{display:flex;justify-content:space-between;font-size:.78rem;color:var(--text3)}
+
+.score-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--card2);font-size:.88rem}
+.score-row:last-child{border:none}
+.score-bar-mini{width:120px;height:6px;background:var(--card2);border-radius:3px;overflow:hidden}
+.score-bar-mini div{height:100%;background:var(--accent2);border-radius:3px}
+
+.feature-tag{display:inline-block;background:var(--card2);border-radius:6px;padding:4px 10px;margin:3px;font-size:.8rem;color:var(--text2)}
+.feature-tag .fscore{color:var(--accent2);font-weight:600;margin-left:4px}
+
+.rec-item{background:var(--card2);border-radius:10px;padding:16px;margin-bottom:10px}
+.rec-item .rec-title{font-weight:600;font-size:.95rem;margin-bottom:6px}
+.rec-item .rec-content{font-size:.85rem;color:var(--text2);line-height:1.5}
+.rec-item .rec-meta{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.rec-item .rec-meta span{font-size:.75rem;background:var(--card);padding:2px 8px;border-radius:4px;color:var(--text3)}
+.rec-difficulty{text-transform:capitalize}
+
+.interpretation-text{font-size:.9rem;line-height:1.7;color:var(--text2);white-space:pre-line}
+.prevention-list{list-style:none;padding:0}
+.prevention-list li{padding:6px 0 6px 20px;position:relative;font-size:.9rem;color:var(--text2)}
+.prevention-list li::before{content:'';position:absolute;left:0;top:12px;width:8px;height:8px;border-radius:50%;background:var(--accent2)}
+.sim-scenario{background:var(--card2);border-radius:10px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:16px}
+.sim-label{font-weight:600;font-size:.92rem;flex:1}
+.sim-desc{font-size:.82rem;color:var(--text3);margin-top:2px}
+.sim-score{display:flex;flex-direction:column;align-items:center;min-width:56px}
+.sim-score .sim-num{font-size:1.5rem;font-weight:800;line-height:1}
+.sim-score .sim-sub{font-size:.7rem;color:var(--text3)}
+.sim-delta{font-size:.8rem;font-weight:600;padding:2px 7px;border-radius:12px;margin-top:4px}
+.sim-delta.better{background:#1a3a1a;color:#4caf50}
+.sim-delta.same{background:var(--card);color:var(--text3)}
+.sim-delta.worse{background:#3a1a1a;color:#f44336}
+
+@media(max-width:600px){
+  .options.cols-4{grid-template-columns:1fr 1fr}
+  .options.cols-3{grid-template-columns:1fr 1fr}
+  .interact-row{grid-template-columns:1fr}
+  .interact-row .freq-btn{font-size:.65rem;padding:5px 8px;min-width:74px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Social Media Usage Assessment</h1>
+  <p class="subtitle">Answer a few questions to understand your social media habits and get personalized advice</p>
+
+  <div class="progress-bar" id="progressBar"></div>
+
+  <form id="quizForm">
+
+    <!-- Step 0: Platform -->
+    <div class="step" data-step="0">
+      <div class="step-title">Which platform do you use most often?</div>
+      <div class="step-desc">For short-form or social video content</div>
+      <div class="options cols-4" data-field="platform">
+        <div class="opt-card" data-val="TikTok">TikTok</div>
+        <div class="opt-card" data-val="Instagram">Instagram</div>
+        <div class="opt-card" data-val="YouTube">YouTube</div>
+        <div class="opt-card" data-val="Facebook">Facebook</div>
+      </div>
+    </div>
+
+    <!-- Step 1: Frequency -->
+    <div class="step" data-step="1">
+      <div class="step-title">When do you open social media the most?</div>
+      <div class="step-desc">Pick the time of day you're most active</div>
+      <div class="options cols-4" data-field="frequency">
+        <div class="opt-card" data-val="Morning">Morning</div>
+        <div class="opt-card" data-val="Afternoon">Afternoon</div>
+        <div class="opt-card" data-val="Evening">Evening</div>
+        <div class="opt-card" data-val="Night">Night</div>
+      </div>
+    </div>
+
+    <!-- Step 2: Video Category -->
+    <div class="step" data-step="2">
+      <div class="step-title">What type of content do you watch most often?</div>
+      <div class="step-desc">Choose your favorite category</div>
+      <div class="options cols-3" data-field="video_category">
+        <div class="opt-card" data-val="Jokes/Memes">Jokes / Memes</div>
+        <div class="opt-card" data-val="Life Hacks">Life Hacks</div>
+        <div class="opt-card" data-val="Gaming">Gaming</div>
+        <div class="opt-card" data-val="Vlogs">Vlogs</div>
+        <div class="opt-card" data-val="Pranks">Pranks</div>
+      </div>
+    </div>
+
+    <!-- Step 3: Watch Time -->
+    <div class="step" data-step="3">
+      <div class="step-title">When do you most often watch social media videos?</div>
+      <div class="step-desc">Select the hour you usually start watching</div>
+      <div class="time-picker">
+        <select id="watchHour"></select>
+        <span class="colon">:</span>
+        <select id="watchMinute">
+          <option value="0">00</option>
+          <option value="15">15</option>
+          <option value="30">30</option>
+          <option value="45">45</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Step 4: Video Length preference -->
+    <div class="step" data-step="4">
+      <div class="step-title">What video length do you usually prefer?</div>
+      <div class="step-desc">From very short clips to long-form videos</div>
+      <div class="options cols-3" data-field="video_length">
+        <div class="opt-card" data-val="A">Very Short<br><small style="color:var(--text3)">~3 min</small></div>
+        <div class="opt-card" data-val="B">Short<br><small style="color:var(--text3)">~9 min</small></div>
+        <div class="opt-card" data-val="C">Medium<br><small style="color:var(--text3)">~15 min</small></div>
+        <div class="opt-card" data-val="D">Long<br><small style="color:var(--text3)">~21 min</small></div>
+        <div class="opt-card" data-val="E">Very Long<br><small style="color:var(--text3)">~27 min</small></div>
+      </div>
+    </div>
+
+    <!-- Step 5: Total Time Spent -->
+    <div class="step" data-step="5">
+      <div class="step-title">How much total time do you spend on social media per day?</div>
+      <div class="step-desc">Your average daily screen time across all platforms</div>
+      <div class="options cols-2" data-field="total_time_spent">
+        <div class="opt-card" data-val="Less than 30 minutes">Less than 30 min</div>
+        <div class="opt-card" data-val="30-60 minutes">30-60 min</div>
+        <div class="opt-card" data-val="1-2 hours">1-2 hours</div>
+        <div class="opt-card" data-val="2-3 hours">2-3 hours</div>
+        <div class="opt-card" data-val="3-4 hours">3-4 hours</div>
+        <div class="opt-card" data-val="4-6 hours">4-6 hours</div>
+        <div class="opt-card" data-val="6-8 hours">6-8 hours</div>
+        <div class="opt-card" data-val="More than 8 hours">More than 8 hours</div>
+      </div>
+    </div>
+
+    <!-- Step 6: Number of Videos Watched -->
+    <div class="step" data-step="6">
+      <div class="step-title">About how many videos do you watch in a typical day?</div>
+      <div class="step-desc">Estimate your daily video count</div>
+      <div class="options cols-3" data-field="num_videos">
+        <div class="opt-card" data-val="1-10">1-10</div>
+        <div class="opt-card" data-val="11-25">11-25</div>
+        <div class="opt-card" data-val="26-50">26-50</div>
+        <div class="opt-card" data-val="51-100">51-100</div>
+        <div class="opt-card" data-val="More than 100">100+</div>
+      </div>
+    </div>
+
+    <!-- Step 7: Number of Sessions -->
+    <div class="step" data-step="7">
+      <div class="step-title">How many separate social media sessions do you have in one day?</div>
+      <div class="step-desc">Each time you open and close the app counts as one session</div>
+      <div class="options cols-3" data-field="num_sessions">
+        <div class="opt-card" data-val="1-3">1-3</div>
+        <div class="opt-card" data-val="4-6">4-6</div>
+        <div class="opt-card" data-val="7-10">7-10</div>
+        <div class="opt-card" data-val="11-15">11-15</div>
+        <div class="opt-card" data-val="More than 15">15+</div>
+      </div>
+    </div>
+
+    <!-- Step 8: Importance Score -->
+    <div class="step" data-step="8">
+      <div class="step-title">How important or meaningful is the content you usually watch?</div>
+      <div class="step-desc">1 = Not at all meaningful &nbsp;&nbsp; 9 = Extremely meaningful</div>
+      <div class="slider-wrap">
+        <div class="slider-val" id="importanceVal">5</div>
+        <input type="range" id="importanceSlider" min="1" max="9" value="5" step="1">
+        <div style="display:flex;justify-content:space-between;width:100%;font-size:.75rem;color:var(--text3)">
+          <span>Not meaningful</span><span>Extremely meaningful</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 9: Time Spent On Video -->
+    <div class="step" data-step="9">
+      <div class="step-title">How much time do you spend watching each video?</div>
+      <div class="step-desc">On average per individual video</div>
+      <div class="options cols-3" data-field="time_on_video">
+        <div class="opt-card" data-val="A">Very Short<br><small style="color:var(--text3)">~5 sec</small></div>
+        <div class="opt-card" data-val="B">Short<br><small style="color:var(--text3)">~11 sec</small></div>
+        <div class="opt-card" data-val="C">Moderate<br><small style="color:var(--text3)">~15 sec</small></div>
+        <div class="opt-card" data-val="D">Long<br><small style="color:var(--text3)">~19 sec</small></div>
+        <div class="opt-card" data-val="E">Very Long<br><small style="color:var(--text3)">~25 sec</small></div>
+      </div>
+    </div>
+
+    <!-- Step 10: Scroll Rate -->
+    <div class="step" data-step="10">
+      <div class="step-title">How quickly do you usually scroll through content?</div>
+      <div class="step-desc">Your typical scrolling speed</div>
+      <div class="options cols-3" data-field="scroll_rate">
+        <div class="opt-card" data-val="A">Very Slowly</div>
+        <div class="opt-card" data-val="B">Somewhat Slowly</div>
+        <div class="opt-card" data-val="C">Moderate Pace</div>
+        <div class="opt-card" data-val="D">Fairly Quickly</div>
+        <div class="opt-card" data-val="E">Very Quickly</div>
+      </div>
+    </div>
+
+    <!-- Step 11: Engagement -->
+    <div class="step" data-step="11">
+      <div class="step-title">Engagement: How often do you Like posts, Comment on posts, Share posts, Save posts, Send posts to friends, Follow creators after watching content on social media?</div>
+      <div class="step-desc">Choose one option</div>
+      <div class="options cols-3" data-field="engagement">
+        <div class="opt-card" data-val="A">Never</div>
+        <div class="opt-card" data-val="B">Rarely</div>
+        <div class="opt-card" data-val="C">Sometimes</div>
+        <div class="opt-card" data-val="D">Often</div>
+        <div class="opt-card" data-val="E">Very Often</div>
+      </div>
+    </div>
+
+  </form>
+
+  <div class="btn-row" id="btnRow">
+    <button class="btn btn-back" id="btnBack" style="display:none">Back</button>
+    <button class="btn btn-next" id="btnNext">Next</button>
+    <button class="btn btn-submit" id="btnSubmit" style="display:none">Get My Results</button>
+  </div>
+
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <div style="font-size:1.1rem;font-weight:600">Analyzing your habits...</div>
+    <div style="color:var(--text2);margin-top:8px;font-size:.88rem">Building your personalized profile</div>
+  </div>
+
+  <div id="results">
+    <h1 style="margin-top:12px">Your Assessment Results</h1>
+    <p class="subtitle">Personalized analysis based on your responses</p>
+
+    <!-- Persona -->
+    <div class="result-card">
+      <h3>Persona Profile</h3>
+      <div class="persona-badge" id="resPersona"></div>
+      <div id="resScores"></div>
+    </div>
+
+    <!-- Addiction Level -->
+    <div class="result-card">
+      <h3>Addiction Level</h3>
+      <div style="display:flex;align-items:baseline;gap:8px">
+        <span style="font-size:2.2rem;font-weight:800" id="resLevel"></span>
+        <span style="color:var(--text3);font-size:.9rem">/ 10</span>
+        <span class="severity-badge" id="resSeverity"></span>
+      </div>
+      <div class="level-bar"><div class="level-fill" id="resLevelBar"></div></div>
+      <div class="level-label"><span>Low Risk</span><span>High Risk</span></div>
+    </div>
+
+    <!-- Top Features -->
+    <div class="result-card">
+      <h3>Top Matching Features</h3>
+      <div id="resFeatures"></div>
+    </div>
+
+    <!-- Interpretation -->
+    <div class="result-card">
+      <h3>Interpretation</h3>
+      <div class="interpretation-text" id="resInterpretation"></div>
+    </div>
+
+    <!-- Recommendations -->
+    <div class="result-card">
+      <h3>Recommended Actions</h3>
+      <div id="resRecommendations"></div>
+    </div>
+
+    <!-- Prevention -->
+    <div class="result-card">
+      <h3>Prevention Ideas</h3>
+      <ul class="prevention-list" id="resPrevention"></ul>
+    </div>
+
+    <!-- Simulation -->
+    <div class="result-card" id="simCard">
+      <h3>What If? — Intervention Simulator</h3>
+      <p style="color:var(--text2);font-size:.88rem;margin-bottom:16px">
+        See how small changes to your habits could affect your predicted addiction level.
+        These reflect how people with similar profiles but adjusted habits tend to score.
+      </p>
+      <div id="simLoading" style="display:none;text-align:center;padding:16px;color:var(--text3);font-size:.9rem">Running simulations…</div>
+      <div id="simResults"></div>
+      <button class="btn" id="btnSimulate" style="margin-top:16px;width:100%">Run Simulation</button>
+    </div>
+
+    <div style="text-align:center">
+      <button class="btn btn-restart" onclick="location.reload()">Take Assessment Again</button>
+    </div>
+    <div style="height:40px"></div>
+  </div>
+
+</div>
+
+<script>
+const TOTAL_STEPS = 12;
+let currentStep = 0;
+const answers = {};
+
+// Populate hour select
+const hourSel = document.getElementById('watchHour');
+for (let h = 0; h < 24; h++) {
+  const opt = document.createElement('option');
+  opt.value = h;
+  const ampm = h < 12 ? 'AM' : 'PM';
+  const display = h === 0 ? 12 : h > 12 ? h - 12 : h;
+  opt.textContent = `${display} ${ampm}`;
+  if (h === 14) opt.selected = true;
+  hourSel.appendChild(opt);
+}
+
+// Build progress bar
+const progressBar = document.getElementById('progressBar');
+for (let i = 0; i < TOTAL_STEPS; i++) {
+  const seg = document.createElement('div');
+  seg.className = 'seg';
+  progressBar.appendChild(seg);
+}
+
+function updateProgress() {
+  const segs = progressBar.querySelectorAll('.seg');
+  segs.forEach((s, i) => {
+    s.className = 'seg';
+    if (i < currentStep) s.classList.add('done');
+    if (i === currentStep) s.classList.add('active');
+  });
+}
+
+function showStep(idx) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  const step = document.querySelector(`.step[data-step="${idx}"]`);
+  if (step) step.classList.add('active');
+
+  document.getElementById('btnBack').style.display = idx > 0 ? '' : 'none';
+  const isLast = idx === TOTAL_STEPS - 1;
+  document.getElementById('btnNext').style.display = isLast ? 'none' : '';
+  document.getElementById('btnSubmit').style.display = isLast ? '' : 'none';
+
+  updateProgress();
+}
+
+// Option cards
+document.querySelectorAll('.options').forEach(group => {
+  const field = group.dataset.field;
+  group.querySelectorAll('.opt-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const firstSelectionForField = answers[field] === undefined;
+      group.querySelectorAll('.opt-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      answers[field] = card.dataset.val;
+
+      // Auto-advance only on the first time this question is answered.
+      if (
+        firstSelectionForField &&
+        currentStep < TOTAL_STEPS - 1 &&
+        canProceed()
+      ) {
+        currentStep++;
+        showStep(currentStep);
+      }
+    });
+  });
+});
+
+// Importance slider
+const impSlider = document.getElementById('importanceSlider');
+const impVal = document.getElementById('importanceVal');
+impSlider.addEventListener('input', () => {
+  impVal.textContent = impSlider.value;
+  answers.importance_score = parseInt(impSlider.value);
+});
+answers.importance_score = 5;
+
+function canProceed() {
+  const stepFields = [
+    'platform', 'frequency', 'video_category', null,
+    'video_length', 'total_time_spent', 'num_videos', 'num_sessions',
+    null, 'time_on_video', 'scroll_rate', 'engagement'
+  ];
+  const field = stepFields[currentStep];
+  if (field === null) return true;
+  return !!answers[field];
+}
+
+document.getElementById('btnNext').addEventListener('click', () => {
+  if (!canProceed()) {
+    document.querySelector(`.step[data-step="${currentStep}"]`).style.animation = 'none';
+    void document.querySelector(`.step[data-step="${currentStep}"]`).offsetHeight;
+    document.querySelector(`.step[data-step="${currentStep}"]`).style.animation = '';
+    return;
+  }
+  if (currentStep < TOTAL_STEPS - 1) {
+    currentStep++;
+    showStep(currentStep);
+  }
+});
+
+document.getElementById('btnBack').addEventListener('click', () => {
+  if (currentStep > 0) {
+    currentStep--;
+    showStep(currentStep);
+  }
+});
+
+document.getElementById('btnSubmit').addEventListener('click', async () => {
+  if (!canProceed()) return;
+
+  document.getElementById('quizForm').style.display = 'none';
+  document.getElementById('btnRow').style.display = 'none';
+  document.getElementById('loading').classList.add('active');
+
+  const payload = {
+    platform: answers.platform,
+    frequency: answers.frequency,
+    video_category: answers.video_category,
+    watch_time_hour: parseInt(document.getElementById('watchHour').value),
+    watch_time_minute: parseInt(document.getElementById('watchMinute').value),
+    video_length: answers.video_length,
+    total_time_spent: answers.total_time_spent,
+    num_videos: answers.num_videos,
+    num_sessions: answers.num_sessions,
+    importance_score: answers.importance_score,
+    time_on_video: answers.time_on_video,
+    scroll_rate: answers.scroll_rate,
+    engagement: answers.engagement || 'C',
+    engagement_style: 'simple',
+  };
+
+  try {
+    const resp = await fetch('/api/submit', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload),
+    });
+    const data = await resp.json();
+    _lastPayload = payload;
+    renderResults(data);
+  } catch (err) {
+    alert('Something went wrong. Please try again.');
+    location.reload();
+  }
+});
+
+function renderResults(data) {
+  document.getElementById('loading').classList.remove('active');
+  const r = document.getElementById('results');
+  r.classList.add('active');
+
+  // Persona
+  document.getElementById('resPersona').textContent = data.persona.name;
+
+  // Persona scores
+  const scoresHtml = Object.entries(data.persona.all_scores).map(([name, score]) => {
+    const maxScore = 8;
+    const pct = Math.min(100, (score / maxScore) * 100);
+    const isBest = name === data.persona.name;
+    return `<div class="score-row">
+      <span style="${isBest ? 'font-weight:700;color:var(--accent2)' : ''}">${name}</span>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="score-bar-mini"><div style="width:${pct}%"></div></div>
+        <span style="font-size:.82rem;min-width:40px;text-align:right;${isBest ? 'color:var(--accent2);font-weight:700' : 'color:var(--text3)'}">${score.toFixed(2)}</span>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('resScores').innerHTML = scoresHtml;
+
+  // Addiction level
+  const level = data.addiction.level;
+  const severity = data.addiction.severity;
+  document.getElementById('resLevel').textContent = level;
+  const sevBadge = document.getElementById('resSeverity');
+  sevBadge.textContent = severity.charAt(0).toUpperCase() + severity.slice(1);
+  sevBadge.className = `severity-badge severity-${severity}`;
+  const pct = (level / 10) * 100;
+  const bar = document.getElementById('resLevelBar');
+  bar.style.width = pct + '%';
+  bar.style.background = level <= 3 ? 'var(--green)' : level <= 6 ? 'var(--yellow)' : 'var(--red)';
+
+  // Features
+  const featHtml = data.persona.top_features.map(f =>
+    `<span class="feature-tag">${f.feature}<span class="fscore">${f.score.toFixed(2)}</span></span>`
+  ).join('');
+  document.getElementById('resFeatures').innerHTML = featHtml;
+
+  // Interpretation
+  document.getElementById('resInterpretation').textContent = data.persona.interpretation;
+
+  // Recommendations
+  const recHtml = data.recommendations.slice(0, 5).map(rec =>
+    `<div class="rec-item">
+      <div class="rec-title">${rec.title}</div>
+      <div class="rec-content">${rec.content}</div>
+      <div class="rec-meta">
+        <span class="rec-difficulty">${rec.difficulty}</span>
+        <span>Score: ${rec.score}</span>
+        ${rec.reasons.map(r => `<span>${r}</span>`).join('')}
+      </div>
+    </div>`
+  ).join('');
+  document.getElementById('resRecommendations').innerHTML = recHtml;
+
+  // Prevention
+  const prevHtml = data.persona.prevention_ideas.map(p =>
+    `<li>${p}</li>`
+  ).join('');
+  document.getElementById('resPrevention').innerHTML = prevHtml;
+
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+// Simulation
+let _lastPayload = null;
+let _originalLevel = null;
+
+document.getElementById('btnSimulate').addEventListener('click', async () => {
+  if (!_lastPayload) return;
+  const btn = document.getElementById('btnSimulate');
+  const loading = document.getElementById('simLoading');
+  btn.style.display = 'none';
+  loading.style.display = 'block';
+
+  try {
+    const resp = await fetch('/api/simulate', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(_lastPayload),
+    });
+    const data = await resp.json();
+    renderSimulation(data);
+  } catch (err) {
+    loading.textContent = 'Simulation failed. Please try again.';
+  }
+});
+
+function renderSimulation(data) {
+  document.getElementById('simLoading').style.display = 'none';
+  const originalLevel = Number(data.original_level);
+  const scenarios = (data.scenarios || []).filter(
+    s => Number(s.predicted_level) !== originalLevel
+  );
+
+  if (!scenarios.length) {
+    document.getElementById('simResults').innerHTML =
+      '<p style="color:var(--text3);font-size:.88rem">All simulated changes produced the same predicted level as your current result.</p>';
+    return;
+  }
+
+  const html = scenarios.map(s => {
+    const delta = s.predicted_level - originalLevel;
+    const deltaLabel = delta < 0 ? `▼ ${Math.abs(delta)} lower`
+                     : delta > 0 ? `▲ ${delta} higher`
+                     : '= no change';
+    const deltaClass = delta < 0 ? 'better' : delta > 0 ? 'worse' : 'same';
+    const color = s.predicted_level <= 3 ? 'var(--green)' : s.predicted_level <= 6 ? 'var(--yellow)' : 'var(--red)';
+    return `<div class="sim-scenario">
+      <div style="flex:1">
+        <div class="sim-label">${s.label}</div>
+        <div class="sim-desc">${s.description}</div>
+      </div>
+      <div class="sim-score">
+        <span class="sim-num" style="color:${color}">${s.predicted_level}</span>
+        <span class="sim-sub">/ 10</span>
+        <span class="sim-delta ${deltaClass}">${deltaLabel}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('simResults').innerHTML = html;
+}
+
+showStep(0);
+</script>
+</body>
+</html>

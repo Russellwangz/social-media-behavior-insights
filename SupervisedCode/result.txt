@@ -1,0 +1,95 @@
+=== RUN START ===
+set_name=Set_B_Behavior_Macro
+feature_signature_sha1=8cad7eadf71a735ca9635c40811684933946ac6d
+feature_count=5
+features=['Total Time Spent', 'Number of Sessions', 'Frequency', 'Watch Time', 'CurrentActivity']
+set=Set_B_Behavior_Macro target=Addiction Level model=logreg split=val accuracy=0.650000 macro_f1=0.642825 mae=0.831250
+set=Set_B_Behavior_Macro target=Addiction Level model=logreg split=test accuracy=0.660000 macro_f1=0.649264 mae=0.890000
+set=Set_B_Behavior_Macro target=Addiction Level model=rf split=val accuracy=0.593750 macro_f1=0.563161 mae=1.031250
+set=Set_B_Behavior_Macro target=Addiction Level model=rf split=test accuracy=0.635000 macro_f1=0.630135 mae=0.970000
+set=Set_B_Behavior_Macro target=Addiction Level model=catboost split=val accuracy=0.631250 macro_f1=0.613353 mae=0.868750
+set=Set_B_Behavior_Macro target=Addiction Level model=catboost split=test accuracy=0.650000 macro_f1=0.635461 mae=0.915000
+set=Set_B_Behavior_Macro target=ProductivityLoss model=logreg split=val accuracy=0.681250 macro_f1=0.654582 mae=0.937500
+set=Set_B_Behavior_Macro target=ProductivityLoss model=logreg split=test accuracy=0.685000 macro_f1=0.632265 mae=0.740000
+set=Set_B_Behavior_Macro target=ProductivityLoss model=rf split=val accuracy=0.625000 macro_f1=0.620453 mae=1.087500
+set=Set_B_Behavior_Macro target=ProductivityLoss model=rf split=test accuracy=0.615000 macro_f1=0.579678 mae=0.985000
+set=Set_B_Behavior_Macro target=ProductivityLoss model=catboost split=val accuracy=0.625000 macro_f1=0.551970 mae=0.950000
+set=Set_B_Behavior_Macro target=ProductivityLoss model=catboost split=test accuracy=0.665000 macro_f1=0.604293 mae=0.770000
+=== RUN END ===
+
+=== RUN START ===
+set_name=Set_A_All_Features
+feature_signature_sha1=d7cd00be4c8d9b9e8cd557c215b9f69d6e5b1a1a
+feature_count=22
+features=['Income', 'Debt', 'Owns Property', 'Profession', 'Demographics', 'Platform', 'Total Time Spent', 'Number of Sessions', 'Video Category', 'Video Length', 'Engagement', 'Importance Score', 'Time Spent On Video', 'Number of Videos Watched', 'Scroll Rate', 'Frequency', 'Watch Reason', 'Watch Time', 'CurrentActivity', 'Gender', 'Location', 'Age']
+set=Set_A_All_Features target=Addiction Level model=logreg split=val accuracy=0.606250 macro_f1=0.534558 mae=0.975000
+set=Set_A_All_Features target=Addiction Level model=logreg split=test accuracy=0.590000 macro_f1=0.541467 mae=1.090000
+set=Set_A_All_Features target=Addiction Level model=rf split=val accuracy=0.606250 macro_f1=0.559687 mae=0.943750
+set=Set_A_All_Features target=Addiction Level model=rf split=test accuracy=0.645000 macro_f1=0.633331 mae=0.930000
+set=Set_A_All_Features target=Addiction Level model=catboost split=val accuracy=0.643750 macro_f1=0.629818 mae=0.818750
+set=Set_A_All_Features target=Addiction Level model=catboost split=test accuracy=0.615000 macro_f1=0.591224 mae=1.035000
+set=Set_A_All_Features target=ProductivityLoss model=logreg split=val accuracy=0.618750 macro_f1=0.562674 mae=1.043750
+set=Set_A_All_Features target=ProductivityLoss model=logreg split=test accuracy=0.565000 macro_f1=0.475240 mae=1.095000
+set=Set_A_All_Features target=ProductivityLoss model=rf split=val accuracy=0.687500 macro_f1=0.664140 mae=0.875000
+set=Set_A_All_Features target=ProductivityLoss model=rf split=test accuracy=0.660000 macro_f1=0.599423 mae=0.760000
+set=Set_A_All_Features target=ProductivityLoss model=catboost split=val accuracy=0.637500 macro_f1=0.587446 mae=0.887500
+set=Set_A_All_Features target=ProductivityLoss model=catboost split=test accuracy=0.655000 macro_f1=0.575059 mae=0.775000
+=== RUN END ===
+
+=== RUN START ===
+set_name=Set_L_Content_Behavior_Interaction
+feature_signature_sha1=26a3843e188da7ba044729d15a3d236e886bf949
+feature_count=5
+features=['Video Category', 'Watch Time', 'Frequency', 'Number of Videos Watched', 'Time Spent On Video']
+set=Set_L_Content_Behavior_Interaction target=Addiction Level model=logreg split=val accuracy=0.637500 macro_f1=0.627252 mae=0.856250
+set=Set_L_Content_Behavior_Interaction target=Addiction Level model=logreg split=test accuracy=0.645000 macro_f1=0.623069 mae=0.925000
+set=Set_L_Content_Behavior_Interaction target=Addiction Level model=rf split=val accuracy=0.568750 macro_f1=0.564385 mae=1.043750
+set=Set_L_Content_Behavior_Interaction target=Addiction Level model=rf split=test accuracy=0.610000 macro_f1=0.609208 mae=1.025000
+set=Set_L_Content_Behavior_Interaction target=Addiction Level model=catboost split=val accuracy=0.631250 macro_f1=0.613124 mae=0.918750
+set=Set_L_Content_Behavior_Interaction target=Addiction Level model=catboost split=test accuracy=0.640000 macro_f1=0.609217 mae=0.925000
+set=Set_L_Content_Behavior_Interaction target=ProductivityLoss model=logreg split=val accuracy=0.681250 macro_f1=0.653952 mae=0.887500
+set=Set_L_Content_Behavior_Interaction target=ProductivityLoss model=logreg split=test accuracy=0.700000 macro_f1=0.662164 mae=0.670000
+set=Set_L_Content_Behavior_Interaction target=ProductivityLoss model=rf split=val accuracy=0.662500 macro_f1=0.629285 mae=0.937500
+set=Set_L_Content_Behavior_Interaction target=ProductivityLoss model=rf split=test accuracy=0.625000 macro_f1=0.589658 mae=1.055000
+set=Set_L_Content_Behavior_Interaction target=ProductivityLoss model=catboost split=val accuracy=0.700000 macro_f1=0.704914 mae=0.837500
+set=Set_L_Content_Behavior_Interaction target=ProductivityLoss model=catboost split=test accuracy=0.685000 macro_f1=0.622095 mae=0.710000
+=== RUN END ===
+
+=== RUN START ===
+set_name=Set_M_Platform_Pattern
+feature_signature_sha1=7c0707884339ef9c9642f28031b9561ea207f28b
+feature_count=4
+features=['Platform', 'Total Time Spent', 'Number of Sessions', 'Watch Time']
+set=Set_M_Platform_Pattern target=Addiction Level model=logreg split=val accuracy=0.625000 macro_f1=0.591839 mae=0.918750
+set=Set_M_Platform_Pattern target=Addiction Level model=logreg split=test accuracy=0.670000 macro_f1=0.671630 mae=0.890000
+set=Set_M_Platform_Pattern target=Addiction Level model=rf split=val accuracy=0.612500 macro_f1=0.545078 mae=0.975000
+set=Set_M_Platform_Pattern target=Addiction Level model=rf split=test accuracy=0.655000 macro_f1=0.632509 mae=0.920000
+set=Set_M_Platform_Pattern target=Addiction Level model=catboost split=val accuracy=0.612500 macro_f1=0.538594 mae=0.943750
+set=Set_M_Platform_Pattern target=Addiction Level model=catboost split=test accuracy=0.670000 macro_f1=0.675349 mae=0.875000
+set=Set_M_Platform_Pattern target=ProductivityLoss model=logreg split=val accuracy=0.687500 macro_f1=0.688196 mae=0.918750
+set=Set_M_Platform_Pattern target=ProductivityLoss model=logreg split=test accuracy=0.685000 macro_f1=0.635687 mae=0.715000
+set=Set_M_Platform_Pattern target=ProductivityLoss model=rf split=val accuracy=0.631250 macro_f1=0.610417 mae=1.087500
+set=Set_M_Platform_Pattern target=ProductivityLoss model=rf split=test accuracy=0.595000 macro_f1=0.518403 mae=1.080000
+set=Set_M_Platform_Pattern target=ProductivityLoss model=catboost split=val accuracy=0.662500 macro_f1=0.669814 mae=0.868750
+set=Set_M_Platform_Pattern target=ProductivityLoss model=catboost split=test accuracy=0.655000 macro_f1=0.566749 mae=0.875000
+=== RUN END ===
+
+=== RUN START ===
+set_name=Set_P_Persona_Core
+feature_signature_sha1=e3c7d0d6cfd59ec001d1395cbf75076f713e1435
+feature_count=6
+features=['Number of Videos Watched', 'Frequency', 'Engagement', 'Video Category', 'Watch Time', 'Importance Score']
+set=Set_P_Persona_Core target=Addiction Level model=logreg split=val accuracy=0.643750 macro_f1=0.634552 mae=0.850000
+set=Set_P_Persona_Core target=Addiction Level model=logreg split=test accuracy=0.645000 macro_f1=0.632676 mae=0.945000
+set=Set_P_Persona_Core target=Addiction Level model=rf split=val accuracy=0.625000 macro_f1=0.603809 mae=0.912500
+set=Set_P_Persona_Core target=Addiction Level model=rf split=test accuracy=0.620000 macro_f1=0.599170 mae=1.055000
+set=Set_P_Persona_Core target=Addiction Level model=catboost split=val accuracy=0.650000 macro_f1=0.643075 mae=0.837500
+set=Set_P_Persona_Core target=Addiction Level model=catboost split=test accuracy=0.625000 macro_f1=0.586731 mae=0.980000
+set=Set_P_Persona_Core target=ProductivityLoss model=logreg split=val accuracy=0.681250 macro_f1=0.639127 mae=0.875000
+set=Set_P_Persona_Core target=ProductivityLoss model=logreg split=test accuracy=0.670000 macro_f1=0.630346 mae=0.755000
+set=Set_P_Persona_Core target=ProductivityLoss model=rf split=val accuracy=0.693750 macro_f1=0.665535 mae=0.850000
+set=Set_P_Persona_Core target=ProductivityLoss model=rf split=test accuracy=0.645000 macro_f1=0.621580 mae=0.875000
+set=Set_P_Persona_Core target=ProductivityLoss model=catboost split=val accuracy=0.700000 macro_f1=0.683165 mae=0.825000
+set=Set_P_Persona_Core target=ProductivityLoss model=catboost split=test accuracy=0.690000 macro_f1=0.649502 mae=0.700000
+=== RUN END ===
+

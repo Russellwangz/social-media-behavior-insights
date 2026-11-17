@@ -1,0 +1,31 @@
+# Python caches and environments
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+
+# Editor / OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Generated training artifacts; keep the tiny deployed model under final_models/
+catboost_info/
+SupervisedCode/outputs/models/*
+!SupervisedCode/outputs/models/.gitkeep
+SupervisedCode/data/processed/
+SupervisedCode/data/raw/*
+!SupervisedCode/data/raw/.gitkeep
+
+# Runtime / diagnostics
+*.log
+.coverage
+htmlcov/
