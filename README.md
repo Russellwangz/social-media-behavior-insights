@@ -8,6 +8,12 @@ A research prototype that goes beyond *screen time* to explore how usage context
 
 [View the full project poster (PDF)](docs/research-poster.pdf)
 
+## Research Report
+
+<a href="docs/research-report.pdf">
+  <img src="docs/research-report-first-page.jpg" alt="First page of the research report Impact of Social Media on Mental Health" width="600">
+</a>
+
 [Read the full research report: *Impact of Social Media on Mental Health* (PDF, 11 pages)](docs/research-report.pdf)
 
 ## What it does
