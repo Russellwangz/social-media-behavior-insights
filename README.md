@@ -8,6 +8,8 @@ A research prototype that goes beyond *screen time* to explore how usage context
 
 [View the full project poster (PDF)](docs/research-poster.pdf)
 
+[Read the full research report: *Impact of Social Media on Mental Health* (PDF, 11 pages)](docs/research-report.pdf)
+
 ## What it does
 
 - **Behavioral profiling:** Assigns a questionnaire response to one of three personas based on weighted matching against prototypes derived from the exploratory clustering analysis: **Long-Session Heavy Viewers**, **High-Engagement Night Habit Users**, and **Frequent Interruption Scrollers**.
@@ -95,7 +97,7 @@ SupervisedCode/                       # Training, feature engineering, evaluatio
   scripts/run_all.py                  # Experiment runner
   outputs/metrics/                    # Saved experiment results
 experiments/                          # Stand-alone persona matching exploration
-docs/                                 # Research poster and preview
+docs/                                 # Research report, poster and preview
 tests/                                # Integration tests
 ```
 
